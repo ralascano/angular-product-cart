@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductCardComponent } from "../product-card/product-card.component";
 import { Product } from '../../models/product';
+import { SharingDataService } from '../../services/sharing-data.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-catalog',
@@ -8,13 +10,18 @@ import { Product } from '../../models/product';
   imports: [ProductCardComponent],
   templateUrl: './catalog.component.html'
 })
-export class CatalogComponent {
+export class CatalogComponent implements OnInit {
 
-  @Input() products!: Product[];
+  products!: Product[];
 
-  @Output() productEventEmitter: EventEmitter<Product> = new EventEmitter(); 
+  constructor(private productService: ProductService, private sharingDataService: SharingDataService) {
+ 
+  }
+  ngOnInit(): void {
+    this.products = this.productService.findAll();
+  }
 
   onAddCart(event: Product) {
-    this.productEventEmitter.emit(event)
+    this.sharingDataService.productEventEmitter.emit(event)
   }
 }
